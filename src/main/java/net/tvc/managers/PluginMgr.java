@@ -485,9 +485,9 @@ public class PluginMgr extends Manager {
     @SuppressWarnings("deprecation")
     public void countdownMatch(Match match) {
         Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(), () -> {
-            Bukkit.broadcastMessage("§aStarting the match in 10 seconds...");
+            Bukkit.broadcastMessage("§aStarting match #"+match.getMatchId()+" in 10 seconds...");
             Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(),
                 () -> startMatch(match), 200L);
-        }, 400L);
+        }, 800L);
     }
 }
