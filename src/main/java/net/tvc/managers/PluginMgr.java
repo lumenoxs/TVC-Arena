@@ -61,7 +61,7 @@ public class PluginMgr extends Manager {
                     return;
                 }
                 
-                if (args.length != 2) {
+                if (args.length < 2) {
                     sender.sendMessage("§eYou need a <kit> parameter! /arena start <kit>");
                     return;
                 }
@@ -89,7 +89,7 @@ public class PluginMgr extends Manager {
             }
             
             case "preview" -> {
-                if (args.length != 2) {
+                if (args.length < 2) {
                     sender.sendMessage("§eYou need a <kit> parameter! /arena preview <kit>");
                     return;
                 }
