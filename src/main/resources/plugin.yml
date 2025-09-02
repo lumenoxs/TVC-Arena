@@ -1,0 +1,7 @@
+name: TVC-Arena
+version: 1.1
+main: net.tvc.ArenaInstance
+commands:
+  arena:
+    description: TVC Arena Command
+    usage: "§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits"

@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------------------------------------
+# TVC-Arena Configuration
+# ---------------------------------------------------------------------------------------------------------
+# 
+# ---------------------------------------------------------------------------------------------------------
+# Each arena must have a unique 'id' (integer).
+# 'top-corner' and 'bottom-corner' define the cuboid boundaries of the arena (used for region checks, etc).
+# 'rooms' is a list of player spawn points; at least 3 are required for each arena.
+#  'init' is the location where a redstone block will be placed to start the match.
+#  All coordinates require 'world', 'x', 'y', and 'z' values.
+#  Example below shows an example arena configuration.
+# ---------------------------------------------------------------------------------------------------------
+# 
+# (note to whoever is reading this: the coordinates below are just placeholders, replace them with actual values)
+# (another note to whoever is reading this: these comments were written by chatgpt, so if they seem a bit off, blame it on the ai, not me)
+# (3rd and final note: this plugin was written by me (rpicpu), not ai, so if you have any questions about it or need help, feel free to contact me on discord (rpicpu))
+
+arenas:
+  # This id must be unique for each arena
+  - id: 1
+    # Top corner of the arena cuboid
+    top-corner:
+      world: world
+      x: 0
+      y: 0
+      z: 0
+    # Bottom corner of the arena cuboid
+    bottom-corner:
+      world: world
+      x: 0
+      y: 0
+      z: 0
+    # List of player spawn points (rooms)
+    # The code automatically detects the number of rooms based on the entries below, so there is no need for a "max-players" setting
+    # There will need to be at least 2 rooms for the arena to be valid
+    rooms:
+    - world: world
+      x: 0
+      y: 0
+      z: 0
+    - world: world
+      x: 0
+      y: 0
+      z: 0
+    - world: world
+      x: 0
+      y: 0
+      z: 0
+    # Location for match initialization (redstone block)
+    init:
+      world: world
+      x: 0
+      y: 0
+      z: 0
+  # You can add more arenas as needed below
