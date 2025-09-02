@@ -36,7 +36,8 @@ public class PluginMgr extends Manager {
     @SuppressWarnings("deprecation")
     public void command(CommandContext<CommandSourceStack> ctx, String label) {
         CommandSender sender = ctx.getSource().getSender();
-        String[] args = ctx.getInput().split(" ");
+        String ctxCommand = ctx.getInput();
+        String[] args = ctxCommand.substring(6).split(" ");
 
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can use this command!");
@@ -61,7 +62,7 @@ public class PluginMgr extends Manager {
                 }
                 
                 if (args.length != 2) {
-                    sender.sendMessage("§eYou need a <kit> parameter! /arena preview <kit>");
+                    sender.sendMessage("§eYou need a <kit> parameter! /arena start <kit>");
                     return;
                 }
                 
