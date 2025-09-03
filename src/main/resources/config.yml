@@ -1,15 +1,15 @@
-# ---------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 # TVC-Arena Configuration
-# ---------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 # 
-# ---------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 # Each arena must have a unique 'id' (integer).
 # 'top-corner' and 'bottom-corner' define the cuboid boundaries of the arena (used for region checks, etc).
 # 'rooms' is a list of player spawn points; at least 3 are required for each arena.
-#  'init' is the location where a redstone block will be placed to start the match.
-#  All coordinates require 'world', 'x', 'y', and 'z' values.
-#  Example below shows an example arena configuration.
-# ---------------------------------------------------------------------------------------------------------
+# 'init' is the location where a redstone block will be placed to start the match.
+# All coordinates require 'world', 'x', 'y', and 'z' values.
+# Example below shows an example arena configuration.
+# ------------------------------------------------------------------------------------------
 # 
 # (note to whoever is reading this: the coordinates below are just placeholders, replace them with actual values)
 # (another note to whoever is reading this: these comments were written by chatgpt, so if they seem a bit off, blame it on the ai, not me)
@@ -18,13 +18,13 @@
 arenas:
   # This id must be unique for each arena
   - id: 1
-    # Top corner of the arena cuboid
+    # Top south east corner of the arena cuboid
     top-corner:
       world: world
       x: 0
       y: 0
       z: 0
-    # Bottom corner of the arena cuboid
+    # Bottom north west corner of the arena cuboid
     bottom-corner:
       world: world
       x: 0

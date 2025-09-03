@@ -11,6 +11,7 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.Command;
@@ -426,13 +427,13 @@ public class PluginMgr extends Manager {
 
     @SuppressWarnings("deprecation")
     public void startMatch(Match match) {
-        if (match.getPlayers().size() == 1) {
-            Player p = Bukkit.getPlayer(match.getPlayers().get(0));
-            if (p != null) {
-                p.sendMessage("§cYou can't play a match by yourself!");
-            }
-            return;
-        }
+        // if (match.getPlayers().size() == 1) {
+        //     Player p = Bukkit.getPlayer(match.getPlayers().get(0));
+        //     if (p != null) {
+        //         p.sendMessage("§cYou can't play a match by yourself!");
+        //     }
+        //     return;
+        // }
         if (match.getPlayers().size() > 4) {
             Bukkit.broadcastMessage("§4Error: max 4 players allowed.");
             return;
@@ -480,6 +481,31 @@ public class PluginMgr extends Manager {
             player.setExhaustion(0.0f); // idk what this does, copilot in visual studio code suggested it
             player.updateInventory();
         }
+        openCloseGates(match.getArena());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void openCloseGates(Integer arenaId) {
+        List<Map<String, Object>> arenas = (List<Map<String, Object>>) configManager.get("arenas");
+        Map<String, Object> matchArena = arenas.get(arenaId);
+        Map<String, Object> init = (Map<String, Object>) matchArena.get("init");
+
+        String worldName = (String) init.get("world");
+        World world = Bukkit.getWorld(worldName);
+
+        double x = ((Number) init.get("x")).doubleValue();
+        double y = ((Number) init.get("y")).doubleValue();
+        double z = ((Number) init.get("z")).doubleValue();
+
+        Location init_location = new Location(world, x, y, z);
+        Block init_block = world.getBlockAt(init_location);
+
+        Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(), () -> {
+            init_block.setType(Material.REDSTONE_BLOCK);
+            Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(), () -> {
+                init_block.setType(Material.AIR);
+            }, 20L);
+        }, 60L);
     }
 
     @SuppressWarnings("deprecation")
