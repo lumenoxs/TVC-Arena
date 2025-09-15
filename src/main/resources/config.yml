@@ -53,3 +53,7 @@ arenas:
       y: 0
       z: 0
   # You can add more arenas as needed below
+
+# Debug (wouldn't recommend switching on, only for developing)
+debug: true
+# yes idgaf im switching it to default on im lazy ok
