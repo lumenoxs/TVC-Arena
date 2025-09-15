@@ -190,6 +190,10 @@ public class PluginMgr extends Manager {
         configManager = new ConfigMgr();
     }
 
+    private Boolean debug() {
+        return ArenaInstance.getInstance().getConfig().getBoolean("debug");
+    }
+
     private LiteralCommandNode<CommandSourceStack> registerCommands() {
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("arena")
             .then(Commands.literal("start")
@@ -430,13 +434,16 @@ public class PluginMgr extends Manager {
 
     @SuppressWarnings("deprecation")
     public void startMatch(Match match) {
-        // if (match.getPlayers().size() == 1) {
-        //     Player p = Bukkit.getPlayer(match.getPlayers().get(0));
-        //     if (p != null) {
-        //         p.sendMessage("§cYou can't play a match by yourself!");
-        //     }
-        //     return;
-        // }
+        if (match.getPlayers().size() == 1) {
+            if (!debug()) {
+                Player p = Bukkit.getPlayer(match.getPlayers().get(0));
+                if (p != null) {
+                    p.sendMessage("§cYou can't play a match by yourself!");
+                }
+                return;
+            }
+        }
+
         if (match.getPlayers().size() > 4) {
             Bukkit.broadcastMessage("§4Error: max 4 players allowed.");
             return;
