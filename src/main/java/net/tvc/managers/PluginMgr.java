@@ -165,6 +165,12 @@ public class PluginMgr extends Manager {
                 sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
                 return;
             }
+
+            case "default" -> {
+                sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
+                return;
+            }
+
             default -> {
                 sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
                 return;
@@ -196,6 +202,10 @@ public class PluginMgr extends Manager {
 
     private LiteralCommandNode<CommandSourceStack> registerCommands() {
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("arena")
+            .executes(ctx -> {
+                command(ctx, "default");
+                return Command.SINGLE_SUCCESS;
+            })
             .then(Commands.literal("start")
                 .then(Commands.argument("kit", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
@@ -294,7 +304,14 @@ public class PluginMgr extends Manager {
                 .executes(ctx -> {
                     command(ctx, "kits");
                     return Command.SINGLE_SUCCESS;
-                }))
+                })
+            )
+            .then(Commands.literal("help")
+                .executes(ctx -> {
+                    command(ctx, "help");
+                    return Command.SINGLE_SUCCESS;
+                })
+            )
             .build();
             
         return root;
