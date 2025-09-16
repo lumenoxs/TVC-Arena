@@ -200,8 +200,28 @@ public class PluginMgr extends Manager {
                 .then(Commands.argument("kit", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
                         Set<String> kits = getKits();
+                        String[] args = ctx.getInput().split(" ");
+                        Boolean skip = false;
+                        if (args.length == 3) {
+                            skip = true;
+                        }
+
+                        if (debug()) {
+                            ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
+                            ArenaInstance.getInstance().getLogger().info("Args: "+args);
+                        }
+
                         for (String kit : kits) {
-                            builder.suggest(kit);
+                            if (debug()) {
+                                ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
+                            }
+                            
+                            if (skip) {
+                                builder.suggest(kit);
+                                continue;
+                            } else if (kit.startsWith(args[3])) {
+                                builder.suggest(kit);
+                            }
                         }
 
                         return builder.buildFuture();

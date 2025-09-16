@@ -1,5 +1,7 @@
 package net.tvc.managers;
 
+import net.tvc.ArenaInstance;
+
 public class Manager {
     protected boolean initialized = false;
 
@@ -11,7 +13,7 @@ public class Manager {
     }
 
     public void register() {
-        System.out.println("[Manager] Registered: " + name());
+        ArenaInstance.getInstance().getLogger().info("[Manager] Registered: " + name());
     }
 
     public final boolean isInitialized() {
