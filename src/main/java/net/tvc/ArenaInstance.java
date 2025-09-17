@@ -1,10 +1,10 @@
 package net.tvc;
 
 import net.tvc.managers.PluginMgr;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ArenaInstance extends JavaPlugin {
-
     private static ArenaInstance instance;
     private PluginMgr manager;
 

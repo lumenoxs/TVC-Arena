@@ -3,8 +3,12 @@ package net.tvc.managers;
 import net.tvc.ArenaInstance;
 
 public class ConfigMgr extends Manager {
-    public ConfigMgr(boolean ...registerAtStartUp) {
-        super(registerAtStartUp);
+    public ConfigMgr() {
+        super();
+    }
+
+    public static Boolean debug() {
+        return ArenaInstance.getInstance().getConfig().getBoolean("debug");
     }
 
     @Override
@@ -13,11 +17,11 @@ public class ConfigMgr extends Manager {
         ArenaInstance.getInstance().saveDefaultConfig();
     }
 
-    public Object get(String path) {
+    public static Object get(String path) {
         return ArenaInstance.getInstance().getConfig().get(path);
     }
 
-    public void set(String path, Object value) {
+    public static void set(String path, Object value) {
         ArenaInstance.getInstance().getConfig().set(path, value);
     }
 }
