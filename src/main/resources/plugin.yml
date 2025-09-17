@@ -1,6 +1,6 @@
 name: TVC-Arena
 version: 1.2
-main: net.tvc.ArenaInstance
+main: net.tvc.arena.ArenaInstance
 author: RPiCPU
 website: truevanilla.net
 description: Plugin for the True Vanilla Community arena server
