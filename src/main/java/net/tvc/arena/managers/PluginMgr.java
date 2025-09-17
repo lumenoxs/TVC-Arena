@@ -1,6 +1,6 @@
-package net.tvc.managers;
+package net.tvc.arena.managers;
 
-import net.tvc.commands.ArenaCommand;
+import net.tvc.arena.commands.ArenaCommand;
 
 public class PluginMgr extends Manager {
     public PluginMgr() {

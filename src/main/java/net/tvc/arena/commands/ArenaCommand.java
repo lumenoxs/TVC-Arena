@@ -1,8 +1,8 @@
-package net.tvc.commands;
+package net.tvc.arena.commands;
 
-import net.tvc.ArenaInstance;
-import net.tvc.managers.ConfigMgr;
-import net.tvc.utils.ArenaLogic;
+import net.tvc.arena.ArenaInstance;
+import net.tvc.arena.managers.ConfigMgr;
+import net.tvc.arena.utils.ArenaLogic;
 
 import java.util.List;
 import java.util.Set;

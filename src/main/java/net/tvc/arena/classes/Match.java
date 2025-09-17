@@ -1,4 +1,4 @@
-package net.tvc.classes;
+package net.tvc.arena.classes;
 
 import java.util.*;
 

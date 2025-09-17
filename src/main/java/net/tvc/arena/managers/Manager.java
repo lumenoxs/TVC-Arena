@@ -1,6 +1,6 @@
-package net.tvc.managers;
+package net.tvc.arena.managers;
 
-import net.tvc.ArenaInstance;
+import net.tvc.arena.ArenaInstance;
 
 public class Manager {
     protected boolean initialized = false;

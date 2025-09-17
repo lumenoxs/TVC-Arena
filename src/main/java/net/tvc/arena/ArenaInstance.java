@@ -1,6 +1,6 @@
-package net.tvc;
+package net.tvc.arena;
 
-import net.tvc.managers.PluginMgr;
+import net.tvc.arena.managers.PluginMgr;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

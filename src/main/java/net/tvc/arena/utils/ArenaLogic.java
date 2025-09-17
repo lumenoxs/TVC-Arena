@@ -1,8 +1,8 @@
-package net.tvc.utils;
+package net.tvc.arena.utils;
 
-import net.tvc.ArenaInstance;
-import net.tvc.classes.Match;
-import net.tvc.managers.ConfigMgr;
+import net.tvc.arena.ArenaInstance;
+import net.tvc.arena.classes.Match;
+import net.tvc.arena.managers.ConfigMgr;
 
 import java.io.File;
 import java.util.ArrayList;
