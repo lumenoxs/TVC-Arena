@@ -48,7 +48,7 @@ public class ArenaCommand {
                             if (skip) {
                                 builder.suggest(kit);
                                 continue;
-                            } else if (kit.startsWith(args[3])) {
+                            } else if (kit.startsWith(args[2])) {
                                 builder.suggest(kit);
                             }
                         }
@@ -106,7 +106,7 @@ public class ArenaCommand {
                             if (skip) {
                                 builder.suggest(kit);
                                 continue;
-                            } else if (kit.startsWith(args[3])) {
+                            } else if (kit.startsWith(args[2])) {
                                 builder.suggest(kit);
                             }
                         }
