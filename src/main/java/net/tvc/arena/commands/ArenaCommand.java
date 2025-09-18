@@ -6,6 +6,7 @@ import net.tvc.arena.utils.ArenaLogic;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -27,15 +28,16 @@ public class ArenaCommand {
                 .then(Commands.argument("kit", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
                         Set<String> kits = ArenaLogic.getKits();
-                        String[] args = ctx.getInput().split(" ");
+                        String[] args = ctx.getInput().toString().split(" ");
                         Boolean skip = false;
-                        if (args.length == 3) {
+                        if (args.length == 2) {
                             skip = true;
                         }
 
                         if (ConfigMgr.debug()) {
                             ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
-                            ArenaInstance.getInstance().getLogger().info("Args: "+args);
+                            ArenaInstance.getInstance().getLogger().info("Args: "+Arrays.toString(args));
+                            ArenaInstance.getInstance().getLogger().info("Args length: "+args.length);
                         }
 
                         for (String kit : kits) {
@@ -50,7 +52,7 @@ public class ArenaCommand {
                                 builder.suggest(kit);
                             }
                         }
-
+                        
                         return builder.buildFuture();
                     })
                     .executes(ctx -> {

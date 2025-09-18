@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Comparator;
@@ -19,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -203,44 +203,50 @@ public class ArenaLogic {
     }
 
     public static List<Integer> getAllArenaIds() {
-        ConfigurationSection arenasList = ArenaInstance.getInstance().getConfig().getConfigurationSection("arenas");
+        if (ConfigMgr.debug()) {
+            ArenaInstance.getInstance().getLogger().info(ArenaInstance.getInstance().getConfig().getValues(true).toString());
+        }
+
+        List<Map<?, ?>> arenas = ArenaInstance.getInstance().getConfig().getMapList("arenas");
         List<Integer> ids = new ArrayList<>();
-        for (String key : arenasList.getKeys(false)) {
-            ConfigurationSection arena = arenasList.getConfigurationSection(key);
-            ids.add(arena.getInt("id"));
+        for (Map<?, ?> arena : arenas) {
+            ids.add((int) arena.get("id"));
         }
         return ids;
     }
     
+    @SuppressWarnings("unchecked")
     public static List<Location> getArenaRooms(Integer arenaId) {
-        ConfigurationSection arenasList = ArenaInstance.getInstance().getConfig().getConfigurationSection("arenas");
+        List<Map<?, ?>> arenas = ArenaInstance.getInstance().getConfig().getMapList("arenas");
         List<Location> locations = new ArrayList<>();
-        ConfigurationSection arena = null;
+        Map<?, ?> wantedArena = null;
         
         if (!getAllArenaIds().contains(arenaId)) return locations;
 
-        for (String key : arenasList.getKeys(false)) {
-            if (arenasList.getConfigurationSection(key).getInt("id") == arenaId) {
-                arena = arenasList.getConfigurationSection(key);
+        for (Map<?, ?> arena : arenas) {
+            if ((int) arena.get("id") == arenaId) {
+                wantedArena = arena;
+                break;
             }
         } 
 
-        if (arena == null) return locations;
+        if (wantedArena == null) return locations;
 
-        ConfigurationSection rooms = arena.getConfigurationSection("rooms");
+        List<Map<?, ?>> rooms = (List<Map<?, ?>>) wantedArena.get("rooms");
+
         if (rooms == null) return locations;
 
-        for (String stroom : rooms.getKeys(false)) {
-            ConfigurationSection room = rooms.getConfigurationSection(stroom);
-            String worldName = room.getString("world");
+        for (Map<?, ?> room : rooms) {
+            String worldName = (String) room.get("world");
             World world = Bukkit.getWorld(worldName);
-            if (world == null) continue;
 
-            double x = ((Number) room.getInt("x")).doubleValue();
-            double y = ((Number) room.get("y")).doubleValue();
-            double z = ((Number) room.get("z")).doubleValue();
-            float yaw = ((Number) room.get("yaw")).floatValue();
-            float pitch = ((Number) room.get("pitch")).floatValue();
+            int x = (int) room.get("x");
+            int y = (int) room.get("y");
+            int z = (int) room.get("z");
+            Float yaw_ = (Float) room.get("yaw");
+            float yaw = (yaw_ != null) ? yaw_ : 0f;
+            Float pitch_ = (Float) room.get("pitch");
+            float pitch = (pitch_ != null) ? pitch_ : 0f;
 
             locations.add(new Location(world, x, y, z, yaw, pitch));
         }
@@ -406,24 +412,26 @@ public class ArenaLogic {
         openCloseGates(match.getArena());
     }
 
+    @SuppressWarnings("unchecked")
     public static void openCloseGates(Integer arenaId) {
-        ConfigurationSection arenasList = ArenaInstance.getInstance().getConfig().getConfigurationSection("arenas");
-        ConfigurationSection arena = null;
+        List<Map<?, ?>> arenas = (List<Map<?, ?>>) ArenaInstance.getInstance().getConfig().get("arenas");
+        Map<?, ?> wantedArena = null;
 
-        for (String key : arenasList.getKeys(false)) {
-            if (arenasList.getConfigurationSection(key).getInt("id") == arenaId) {
-                arena = arenasList.getConfigurationSection(key);
+        for (Map<?, ?> arena : arenas) {
+            if ((int) arena.get("id") == arenaId) {
+                wantedArena = arena;
+                break;
             }
         }
 
-        if (arena == null) return;
+        if (wantedArena == null) return;
 
-        String worldName = arena.getString("init.world");
+        String worldName = (String) wantedArena.get("init.world");
         World world = Bukkit.getWorld(worldName);
 
-        double x = ((Number) arena.getInt("init.x")).doubleValue();
-        double y = ((Number) arena.getInt("init.y")).doubleValue();
-        double z = ((Number) arena.getInt("init.z")).doubleValue();
+        int x = (int) wantedArena.get("init.x");
+        int y = (int) wantedArena.get("init.y");
+        int z = (int) wantedArena.get("init.z");
 
         Location init_location = new Location(world, x, y, z);
         Block init_block = world.getBlockAt(init_location);
