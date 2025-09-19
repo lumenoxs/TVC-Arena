@@ -21,7 +21,7 @@ public class Match {
         this.diedPlayers = new ArrayList<>();
     }
 
-    public boolean isQueueing() {
+    public boolean getQueueing() {
         return queueing;
     }
     public List<UUID> getPlayers() {

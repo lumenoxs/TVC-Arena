@@ -122,7 +122,7 @@ public class ArenaLogic {
                     try {
                         int matchId = Integer.parseInt(args[1]);
                         matchToJoin = getMatchById(matchId);
-                        if (matchToJoin == null || !matchToJoin.isQueueing()) {
+                        if (matchToJoin == null || !matchToJoin.getQueueing()) {
                             sender.sendMessage("§cMatch #" + matchId + " does not exist or has already started.");
                             return;
                         }
@@ -149,7 +149,7 @@ public class ArenaLogic {
                     sender.sendMessage("§cYou aren't in a match!");
                     return;
                 }
-                if (!playerMatch.isQueueing()) {
+                if (!playerMatch.getQueueing()) {
                     sender.sendMessage("§cYour match has already started!");
                     return;
                 }
@@ -268,7 +268,7 @@ public class ArenaLogic {
         for (Integer arenaId : allArenas) {
             boolean taken = false;
             for (Match m : matches) {
-                if (!m.isQueueing() && m.getArena() != null && m.getArena().equals(arenaId)) {
+                if (!m.getQueueing() && m.getArena() != null && m.getArena().equals(arenaId)) {
                     taken = true;
                     break;
                 }
@@ -282,7 +282,7 @@ public class ArenaLogic {
 
     public static Match getActiveQueue() {
         return matches.stream()
-                .filter(Match::isQueueing)
+                .filter(Match::getQueueing)
                 .max(Comparator.comparingInt(Match::getPriority))
                 .orElse(null);
     }
@@ -458,9 +458,13 @@ public class ArenaLogic {
     @SuppressWarnings("deprecation")
     public static void countdownMatch(Match match) {
         Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(), () -> {
+            if (!match.getQueueing()) return;
             Bukkit.broadcastMessage("§aStarting match #"+match.getMatchId()+" in 10 seconds...");
             Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(),
-                () -> startMatch(match), 200L);
+                () -> {
+                    if (!match.getQueueing()) return;
+                    startMatch(match);
+                }, 200L);
         }, 800L);
     }
 }
