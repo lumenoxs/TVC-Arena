@@ -24,12 +24,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.Listener;
 
 import com.mojang.brigadier.context.CommandContext;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
-public class ArenaLogic {
+public class ArenaLogic implements Listener {
     private static List<Match> matches = new ArrayList<>();
 
     @SuppressWarnings("deprecation")
