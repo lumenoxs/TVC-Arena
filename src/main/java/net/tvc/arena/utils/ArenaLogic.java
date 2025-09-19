@@ -436,12 +436,13 @@ public class ArenaLogic {
 
         if (wantedArena == null) return;
 
-        String worldName = (String) wantedArena.get("init.world");
+        Map<?, ?> init_config = (Map<?, ?>) wantedArena.get("init");
+        String worldName = (String) init_config.get("world");
         World world = Bukkit.getWorld(worldName);
 
-        int x = (int) wantedArena.get("init.x");
-        int y = (int) wantedArena.get("init.y");
-        int z = (int) wantedArena.get("init.z");
+        int x = (int) init_config.get("x");
+        int y = (int) init_config.get("y");
+        int z = (int) init_config.get("z");
 
         Location init_location = new Location(world, x, y, z);
         Block init_block = world.getBlockAt(init_location);
