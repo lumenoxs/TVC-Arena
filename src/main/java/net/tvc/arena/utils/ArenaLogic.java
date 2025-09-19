@@ -300,6 +300,9 @@ public class ArenaLogic {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        if (ConfigMgr.debug()) {
+            Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" died!");
+        }
         Player player = event.getEntity();
         UUID uuid = player.getUniqueId();
 
@@ -332,8 +335,12 @@ public class ArenaLogic {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        if (ConfigMgr.debug()) {
+            Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit!");
+        }
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
@@ -412,8 +419,11 @@ public class ArenaLogic {
         openCloseGates(match.getArena());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public static void openCloseGates(Integer arenaId) {
+        if (ConfigMgr.debug()) {
+            Bukkit.broadcastMessage("Opening/closing gates");
+        }
         List<Map<?, ?>> arenas = (List<Map<?, ?>>) ArenaInstance.getInstance().getConfig().get("arenas");
         Map<?, ?> wantedArena = null;
 
