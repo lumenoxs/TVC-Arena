@@ -4,12 +4,13 @@ import java.util.*;
 
 public class Match {
     private boolean queueing;
-    private final List<UUID> players;
+    private List<UUID> players;
     private Integer arena;
     private final int matchId;
     private final int priority;
     private final String kit;
-    private final List<UUID> diedPlayers;
+    private List<UUID> diedPlayers;
+    private boolean finished;
 
     public Match(boolean queueing, List<UUID> players, Integer arena, String kit, int matchId, int priority) {
         this.queueing = queueing;
@@ -19,6 +20,7 @@ public class Match {
         this.matchId = matchId;
         this.priority = priority;
         this.diedPlayers = new ArrayList<>();
+        this.finished = false;
     }
 
     public boolean getQueueing() {
@@ -70,5 +72,13 @@ public class Match {
             return diedPlayers.size();
         }
         return -1;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public boolean getFinished() {
+        return finished;
     }
 }

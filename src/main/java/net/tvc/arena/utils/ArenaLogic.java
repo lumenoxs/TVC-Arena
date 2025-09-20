@@ -262,7 +262,7 @@ public class ArenaLogic implements Listener {
     @SuppressWarnings("deprecation")
     public static void endMatch(Match match) {
         matches.remove(match);
-        match.setArena(null);
+        match.setFinished(true);
         Bukkit.broadcastMessage("§aMatch #" + match.getMatchId() + " has ended.");
     }
 
@@ -366,6 +366,7 @@ public class ArenaLogic implements Listener {
 
     @SuppressWarnings("deprecation")
     public static void startMatch(Match match) {
+        if (match.getFinished()) return;
         if (match.getPlayers().size() == 1) {
             if (!ConfigMgr.debug()) {
                 Player p = Bukkit.getPlayer(match.getPlayers().get(0));
