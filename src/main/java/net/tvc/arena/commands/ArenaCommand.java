@@ -6,11 +6,15 @@ import net.tvc.arena.utils.ArenaLogic;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.Arrays;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -18,6 +22,36 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 
 public class ArenaCommand {
+    public static CompletableFuture<Suggestions> suggestKits(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        Set<String> kits = ArenaLogic.getKits();
+        String[] args = ctx.getInput().toString().split(" ");
+        Boolean skip = false;
+        if (args.length == 2) {
+            skip = true;
+        }
+
+        if (ConfigMgr.debug()) {
+            ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
+            ArenaInstance.getInstance().getLogger().info("Args: "+Arrays.toString(args));
+            ArenaInstance.getInstance().getLogger().info("Args length: "+args.length);
+        }
+
+        for (String kit : kits) {
+            if (ConfigMgr.debug()) {
+                ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
+            }
+
+            if (skip) {
+                builder.suggest(kit);
+                continue;
+            } else if (kit.startsWith(args[2].toUpperCase())) {
+                builder.suggest(kit);
+            }
+        }
+        
+        return builder.buildFuture();
+    }
+
     public static void registerCommand() {
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("arena")
             .executes(ctx -> {
@@ -27,33 +61,7 @@ public class ArenaCommand {
             .then(Commands.literal("start")
                 .then(Commands.argument("kit", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
-                        Set<String> kits = ArenaLogic.getKits();
-                        String[] args = ctx.getInput().toString().split(" ");
-                        Boolean skip = false;
-                        if (args.length == 2) {
-                            skip = true;
-                        }
-
-                        if (ConfigMgr.debug()) {
-                            ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
-                            ArenaInstance.getInstance().getLogger().info("Args: "+Arrays.toString(args));
-                            ArenaInstance.getInstance().getLogger().info("Args length: "+args.length);
-                        }
-
-                        for (String kit : kits) {
-                            if (ConfigMgr.debug()) {
-                                ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
-                            }
-
-                            if (skip) {
-                                builder.suggest(kit);
-                                continue;
-                            } else if (kit.startsWith(args[2])) {
-                                builder.suggest(kit);
-                            }
-                        }
-                        
-                        return builder.buildFuture();
+                        return suggestKits(ctx, builder);
                     })
                     .executes(ctx -> {
                         ArenaLogic.command(ctx, "start");
@@ -65,9 +73,7 @@ public class ArenaCommand {
                 .then(Commands.argument("arena", IntegerArgumentType.integer())
                     .suggests((ctx, builder) -> {
                         List<Integer> arena_ids = ArenaLogic.getAllArenaIds();
-                        for (Integer arena_id : arena_ids) {
-                            builder.suggest(arena_id);
-                        }
+                        for (Integer arena_id : arena_ids) builder.suggest(arena_id);
 
                         return builder.buildFuture();
                     })
@@ -86,32 +92,7 @@ public class ArenaCommand {
             .then(Commands.literal("preview")
                 .then(Commands.argument("kit", StringArgumentType.word())
                     .suggests((ctx, builder) -> {
-                        Set<String> kits = ArenaLogic.getKits();
-                        String[] args = ctx.getInput().split(" ");
-                        Boolean skip = false;
-                        if (args.length == 3) {
-                            skip = true;
-                        }
-
-                        if (ConfigMgr.debug()) {
-                            ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
-                            ArenaInstance.getInstance().getLogger().info("Args: "+args);
-                        }
-
-                        for (String kit : kits) {
-                            if (ConfigMgr.debug()) {
-                                ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
-                            }
-
-                            if (skip) {
-                                builder.suggest(kit);
-                                continue;
-                            } else if (kit.startsWith(args[2])) {
-                                builder.suggest(kit);
-                            }
-                        }
-
-                        return builder.buildFuture();
+                        return suggestKits(ctx, builder);
                     })
                     .executes(ctx -> {
                         ArenaLogic.command(ctx, "preview");

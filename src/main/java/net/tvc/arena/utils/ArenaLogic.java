@@ -65,6 +65,8 @@ public class ArenaLogic implements Listener {
                     sender.sendMessage("§eYou need a <kit> parameter! /arena start <kit>");
                     return;
                 }
+
+                args[1] = args[1].toUpperCase();
                 
                 if (!kits.contains(args[1])) {
                     sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
@@ -93,6 +95,8 @@ public class ArenaLogic implements Listener {
                     sender.sendMessage("§eYou need a <kit> parameter! /arena preview <kit>");
                     return;
                 }
+
+                args[1] = args[1].toUpperCase();
                 
                 if (!kits.contains(args[1])) {
                     sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
@@ -132,7 +136,7 @@ public class ArenaLogic implements Listener {
                         return;
                     }
                 } else {
-                    // no id provided → join the active queue
+                    // no id provided -> join the active queue
                     matchToJoin = getActiveQueue();
                     if (matchToJoin == null) {
                         sender.sendMessage("§cThere is no queueing match to join.");
