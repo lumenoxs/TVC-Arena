@@ -324,7 +324,9 @@ public class ArenaLogic implements Listener {
         if (original == null) {
             original = player.getName() + " died";
         }
-        if (place > 2) {
+        int placeCap = 2;
+        if (ConfigMgr.debug()) placeCap = 1;
+        if (place > placeCap) {
             event.setDeathMessage(original + " and got #" + place);
         } else {
             event.setDeathMessage(original + " and got #" + place);
@@ -343,15 +345,16 @@ public class ArenaLogic implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (ConfigMgr.debug()) {
-            Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit!");
-        }
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
         Match match = getPlayerMatch(uuid);
-        if (match == null) return;
+        if (match == null) {
+            if (ConfigMgr.debug()) Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit, but wasn't in a match.");
+            return;
+        }
 
+        if (ConfigMgr.debug()) Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit and was in a match!");
         player.setHealth(0.0);
     }
 
@@ -418,7 +421,6 @@ public class ArenaLogic implements Listener {
             player.setHealth(20.0);
             player.setFoodLevel(20);
             player.setSaturation(20.0f);
-            player.setExhaustion(0.0f); // idk what this does, copilot in visual studio code suggested it
             player.updateInventory();
         }
         openCloseGates(match.getArena());
