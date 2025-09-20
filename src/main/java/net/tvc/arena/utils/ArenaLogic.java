@@ -325,9 +325,35 @@ public class ArenaLogic implements Listener {
             original = player.getName() + " died";
         }
         int placeCap = 2;
-        if (ConfigMgr.debug()) placeCap = 1;
+        if (ConfigMgr.debug()) {
+            placeCap = 1;
+            Bukkit.broadcastMessage("Place: "+place +"\nPlace Cap: "+placeCap);
+        }
         if (place > placeCap) {
             event.setDeathMessage(original + " and got #" + place);
+        } else if (place == placeCap) {
+            if (!ConfigMgr.debug()) {
+                event.setDeathMessage(original + " and got #" + place);
+                List<UUID> alive = new ArrayList<>(currentMatch.getPlayers());
+                alive.removeAll(currentMatch.getDiedPlayers());
+                if (alive.size() == 1) {
+                    Player winner = Bukkit.getPlayer(alive.get(0));
+                    if (winner != null) {
+                        Bukkit.broadcastMessage(winner.getName() + " has won the match! Congrats!");
+                    }
+                    endMatch(currentMatch);
+                }
+            } else {
+                List<UUID> alive = new ArrayList<>(currentMatch.getPlayers());
+                alive.removeAll(currentMatch.getDiedPlayers());
+                if (alive.size() == 1) {
+                    Player winner = Bukkit.getPlayer(alive.get(0));
+                    if (winner != null) {
+                        Bukkit.broadcastMessage(winner.getName() + " has won the match! Congrats!");
+                    }
+                    endMatch(currentMatch);
+                }
+            }
         } else {
             event.setDeathMessage(original + " and got #" + place);
             List<UUID> alive = new ArrayList<>(currentMatch.getPlayers());
