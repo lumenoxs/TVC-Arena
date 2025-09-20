@@ -263,6 +263,7 @@ public class ArenaLogic implements Listener {
     public static void endMatch(Match match) {
         matches.remove(match);
         match.setFinished(true);
+        openCloseGates(match.getMatchId());
         Bukkit.broadcastMessage("§aMatch #" + match.getMatchId() + " has ended.");
     }
 

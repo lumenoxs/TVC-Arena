@@ -28,24 +28,31 @@ public class Match {
     public boolean getQueueing() {
         return queueing;
     }
+    
     public List<UUID> getPlayers() {
         return players;
     }
+
     public Integer getArena() {
         return arena;
     }
+
     public String getKit() {
 		return kit;
 	}
+
     public int getMatchId() {
         return matchId;
     }
+
     public int getPriority() {
         return priority;
     }
+
     public void setArena(Integer arena) {
         this.arena = arena;
     }
+
     public void addPlayer(UUID playeruuid) {
         players.add(playeruuid);
     }
