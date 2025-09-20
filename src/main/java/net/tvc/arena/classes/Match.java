@@ -1,6 +1,8 @@
 package net.tvc.arena.classes;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.ArrayList;
 
 public class Match {
     private boolean queueing;
@@ -27,7 +29,7 @@ public class Match {
         return queueing;
     }
     public List<UUID> getPlayers() {
-        return Collections.unmodifiableList(players);
+        return players;
     }
     public Integer getArena() {
         return arena;
@@ -68,10 +70,7 @@ public class Match {
     }
 
     public int getPlacement(UUID uuid) {
-        if (diedPlayers.contains(uuid)) {
-            return diedPlayers.size();
-        }
-        return -1;
+        return players.size()+1;
     }
 
     public void setFinished(boolean finished) {

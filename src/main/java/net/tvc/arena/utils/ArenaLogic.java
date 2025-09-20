@@ -298,13 +298,15 @@ public class ArenaLogic implements Listener {
         Player player = event.getEntity();
         UUID uuid = player.getUniqueId();
 
-        if (ConfigMgr.debug()) {
-            Bukkit.broadcastMessage("Player "+player.getName()+" died!");
-        }
-
         Match currentMatch = getPlayerMatch(uuid);
         if (currentMatch == null) return;
         if (currentMatch.getQueueing()) return;
+
+        if (ConfigMgr.debug()) {
+            Bukkit.broadcastMessage("Player "+player.getName()+" died!");
+            Bukkit.broadcastMessage("Alive players in the match: "+currentMatch.getPlayers());
+            Bukkit.broadcastMessage("Dead players in the match: "+currentMatch.getDiedPlayers());
+        }
 
         currentMatch.markDead(uuid);
 
@@ -366,6 +368,7 @@ public class ArenaLogic implements Listener {
 
     @SuppressWarnings("deprecation")
     public static void startMatch(Match match) {
+        if (ConfigMgr.debug()) Bukkit.broadcastMessage("Match finished: "+match.getFinished());
         if (match.getFinished()) return;
         if (match.getPlayers().size() == 1) {
             if (!ConfigMgr.debug()) {
