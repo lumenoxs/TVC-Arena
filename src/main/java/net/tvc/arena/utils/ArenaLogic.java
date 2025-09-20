@@ -199,9 +199,9 @@ public class ArenaLogic implements Listener {
     }
 
     public static Match getPlayerMatch(UUID uuid) {
-        for (Match m : matches) {
-            if (m.getPlayers().contains(uuid)) {
-                return m;
+        for (Match match : matches) {
+            if (match.containsPlayer(uuid)) {
+                return match;
             }
         }
         return null;
@@ -292,16 +292,6 @@ public class ArenaLogic implements Listener {
                 .orElse(null);
     }
 
-    public static Match findMatch(UUID uuid) {
-        for (Match match : matches) {
-            if (match.containsPlayer(uuid)) {
-                return match;
-            }
-        }
-        return null;
-    }
-
-
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -312,8 +302,9 @@ public class ArenaLogic implements Listener {
             Bukkit.broadcastMessage("Player "+player.getName()+" died!");
         }
 
-        Match currentMatch = findMatch(uuid);
+        Match currentMatch = getPlayerMatch(uuid);
         if (currentMatch == null) return;
+        if (currentMatch.getQueueing()) return;
 
         currentMatch.markDead(uuid);
 
