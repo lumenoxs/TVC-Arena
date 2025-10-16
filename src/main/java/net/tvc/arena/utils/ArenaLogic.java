@@ -38,7 +38,7 @@ public class ArenaLogic implements Listener {
         CommandSender sender = ctx.getSource().getSender();
         try {
             String ctxCommand = ctx.getInput();
-            String[] args = ctxCommand.replace("arena ", "").replace("arena", "").split(" ");
+            String[] args = ctxCommand.replace("tvc-arena:arena ", "").replace("tvc-arena:arena", "").replace("arena ", "").replace("arena", "").split(" ");
             ArenaInstance.getInstance().getLogger().info("Command was run: " + ctxCommand);
             ArenaInstance.getInstance().getLogger().info("Command args: " + String.join(", ", args));
 

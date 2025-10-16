@@ -18,7 +18,7 @@ public class PluginManager extends Manager {
     }
 
     private void registerCommands() {
-         ArenaInstance.getInstance().getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+        ArenaInstance.getInstance().getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(ArenaCommand.createArenaCommand());
         });
     }

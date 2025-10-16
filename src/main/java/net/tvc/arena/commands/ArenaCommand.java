@@ -30,14 +30,14 @@ public class ArenaCommand {
         }
 
         if (ConfigManager.debug()) {
-            ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
-            ArenaInstance.getInstance().getLogger().info("Args: "+Arrays.toString(args));
-            ArenaInstance.getInstance().getLogger().info("Args length: "+args.length);
+            ArenaInstance.getInstance().getLogger().info("Suggesting kits to " + ctx.getSource().getSender().getName());
+            ArenaInstance.getInstance().getLogger().info("Args: " + Arrays.toString(args));
+            ArenaInstance.getInstance().getLogger().info("Args length: " + args.length);
         }
 
         for (String kit : kits) {
             if (ConfigManager.debug()) {
-                ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
+                ArenaInstance.getInstance().getLogger().info("Kit: " + kit);
             }
 
             if (skip) {
