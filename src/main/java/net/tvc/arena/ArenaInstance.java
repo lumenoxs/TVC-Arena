@@ -1,20 +1,20 @@
 package net.tvc.arena;
 
-import net.tvc.arena.managers.PluginMgr;
+import net.tvc.arena.managers.PluginManager;
 import net.tvc.arena.utils.ArenaLogic;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ArenaInstance extends JavaPlugin {
     private static ArenaInstance instance;
-    private PluginMgr manager;
+    private PluginManager manager;
     private ArenaLogic arenaLogicListener = new ArenaLogic();
 
     @Override
     public void onEnable() {
         instance = this;
 
-        this.manager = new PluginMgr();
+        this.manager = new PluginManager();
         this.manager.register();
 
         getServer().getPluginManager().registerEvents(arenaLogicListener, this);
@@ -31,7 +31,7 @@ public final class ArenaInstance extends JavaPlugin {
         return instance;
     }
 
-    public PluginMgr getMgr() {
+    public PluginManager getMgr() {
         return manager;
     }
 }

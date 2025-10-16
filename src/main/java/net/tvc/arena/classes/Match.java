@@ -29,7 +29,13 @@ public class Match {
         return queueing;
     }
     
-    public List<UUID> getPlayers() {
+    public List<UUID> getAllPlayers() {
+        List<UUID> tplayers = new ArrayList<>(players);
+        tplayers.addAll(diedPlayers);
+        return tplayers;
+    }
+
+    public List<UUID> getAlivePlayers() {
         return players;
     }
 

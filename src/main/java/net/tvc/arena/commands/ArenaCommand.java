@@ -1,7 +1,7 @@
 package net.tvc.arena.commands;
 
 import net.tvc.arena.ArenaInstance;
-import net.tvc.arena.managers.ConfigMgr;
+import net.tvc.arena.managers.ConfigManager;
 import net.tvc.arena.utils.ArenaLogic;
 
 import java.util.List;
@@ -19,7 +19,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 
 public class ArenaCommand {
     public static CompletableFuture<Suggestions> suggestKits(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
@@ -30,14 +29,14 @@ public class ArenaCommand {
             skip = true;
         }
 
-        if (ConfigMgr.debug()) {
+        if (ConfigManager.debug()) {
             ArenaInstance.getInstance().getLogger().info("Suggesting kits to "+ctx.getSource().getSender().getName());
             ArenaInstance.getInstance().getLogger().info("Args: "+Arrays.toString(args));
             ArenaInstance.getInstance().getLogger().info("Args length: "+args.length);
         }
 
         for (String kit : kits) {
-            if (ConfigMgr.debug()) {
+            if (ConfigManager.debug()) {
                 ArenaInstance.getInstance().getLogger().info("Kit: "+kit);
             }
 
@@ -52,7 +51,7 @@ public class ArenaCommand {
         return builder.buildFuture();
     }
 
-    public static void registerCommand() {
+    public static LiteralCommandNode<CommandSourceStack> createArenaCommand() {
         LiteralCommandNode<CommandSourceStack> root = Commands.literal("arena")
             .executes(ctx -> {
                 ArenaLogic.command(ctx, "default");
@@ -114,8 +113,6 @@ public class ArenaCommand {
             )
             .build();
         
-        ArenaInstance.getInstance().getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            commands.registrar().register(root);
-        });
+        return root;
     }
 }

@@ -2,7 +2,7 @@ package net.tvc.arena.utils;
 
 import net.tvc.arena.ArenaInstance;
 import net.tvc.arena.classes.Match;
-import net.tvc.arena.managers.ConfigMgr;
+import net.tvc.arena.managers.ConfigManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,148 +36,154 @@ public class ArenaLogic implements Listener {
     @SuppressWarnings("deprecation")
     public static void command(CommandContext<CommandSourceStack> ctx, String label) {
         CommandSender sender = ctx.getSource().getSender();
-        String ctxCommand = ctx.getInput();
-        String[] args = ctxCommand.substring(6).split(" ");
+        try {
+            String ctxCommand = ctx.getInput();
+            String[] args = ctxCommand.replace("arena ", "").replace("arena", "").split(" ");
+            ArenaInstance.getInstance().getLogger().info("Command was run: " + ctxCommand);
+            ArenaInstance.getInstance().getLogger().info("Command args: " + String.join(", ", args));
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use this command!");
-            return;
-        }
-        
-        if (args.length == 0) {
-            sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
-            return;
-        }
-        
-        Player player = (Player) sender;
-        UUID puuid = player.getUniqueId();
-        Match playerMatch = getPlayerMatch(puuid);
-        Set<String> kits = getKits();
-
-        switch (label.toLowerCase()) {
-            case "start" -> {
-                if (playerMatch != null) {
-                    sender.sendMessage("§cYou're already in a match!");
-                    return;
-                }
-                
-                if (args.length < 2) {
-                    sender.sendMessage("§eYou need a <kit> parameter! /arena start <kit>");
-                    return;
-                }
-
-                args[1] = args[1].toUpperCase();
-                
-                if (!kits.contains(args[1])) {
-                    sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
-                    return;
-                }
-                
-                Match newMatch = new Match(
-                    true, new ArrayList<>(List.of(puuid)), null, args[1],
-                    matches.size() + 1, 10 - matches.size()
-                );
-
-                matches.add(newMatch);
-                sender.sendMessage("§aYou have started a new match with kit " + args[1] + "! Tell others to run /arena join " + matches.size() + " to join your match.");
-                Bukkit.broadcastMessage("§bA new match with kit "+args[1]+" has started! Use /arena join " + matches.size() + " to enter.");
-                countdownMatch(newMatch);
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Only players can use this command!");
                 return;
             }
             
-            case "kits" -> {
-                sender.sendMessage("§bHere is a list of the kits:\n§a"+String.join("§7, §a", kits)+"\n§bYou can preview a kit with /arena preview <kit>");
+            if (args.length == 0) {
+                sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
                 return;
             }
             
-            case "preview" -> {
-                if (args.length < 2) {
-                    sender.sendMessage("§eYou need a <kit> parameter! /arena preview <kit>");
+            Player player = (Player) sender;
+            UUID puuid = player.getUniqueId();
+            Match playerMatch = getPlayerMatch(puuid);
+            Set<String> kits = getKits();
+
+            switch (label.toLowerCase()) {
+                case "start" -> {
+                    if (playerMatch != null) {
+                        sender.sendMessage("§cYou're already in a match!");
+                        return;
+                    }
+                    
+                    if (args.length < 2) {
+                        sender.sendMessage("§eYou need a <kit> parameter! /arena start <kit>");
+                        return;
+                    }
+
+                    args[1] = args[1].toUpperCase();
+                    
+                    if (!kits.contains(args[1])) {
+                        sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
+                        return;
+                    }
+                    
+                    Match newMatch = new Match(
+                        true, new ArrayList<>(List.of(puuid)), null, args[1],
+                        matches.size() + 1, 10 - matches.size()
+                    );
+
+                    matches.add(newMatch);
+                    sender.sendMessage("§aYou have started a new match with kit " + args[1] + "! Tell others to run /arena join " + matches.size() + " to join your match.");
+                    Bukkit.broadcastMessage("§bA new match with kit " + args[1] + " has started! Use /arena join " + matches.size() + " to enter.");
+                    countdownMatch(newMatch);
                     return;
                 }
-
-                args[1] = args[1].toUpperCase();
                 
-                if (!kits.contains(args[1])) {
-                    sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
+                case "kits" -> {
+                    sender.sendMessage("§bHere is a list of the kits:\n§a" + String.join("§7, §a", kits) + "\n§bYou can preview a kit with /arena preview <kit>");
                     return;
                 }
                 
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                String command = "kit preview "+args[1]+" "+player.getName();
-                Bukkit.dispatchCommand(console, command);
-                return;
-            }
-            
-            case "join" -> {
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage("Only players can join matches!");
+                case "preview" -> {
+                    if (args.length < 2) {
+                        sender.sendMessage("§eYou need a <kit> parameter! /arena preview <kit>");
+                        return;
+                    }
+
+                    args[1] = args[1].toUpperCase();
+                    
+                    if (!kits.contains(args[1])) {
+                        sender.sendMessage("§cThats not a valid kit! Use /arena kits to list all the kits, preview them with /arena preview <kit>, and start a new match with /arena start <kit>.");
+                        return;
+                    }
+                    
+                    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                    String command = "kit preview " + args[1] + " " + player.getName();
+                    Bukkit.dispatchCommand(console, command);
                     return;
                 }
+                
+                case "join" -> {
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("Only players can join matches!");
+                        return;
+                    }
 
-                if (getPlayerMatch(puuid) != null) {
-                    sender.sendMessage("§cYou're already in a match!");
-                    return;
-                }
+                    if (getPlayerMatch(puuid) != null) {
+                        sender.sendMessage("§cYou're already in a match!");
+                        return;
+                    }
 
-                Match matchToJoin = null;
+                    Match matchToJoin = null;
 
-                if (args.length == 2) {
-                    // player provided a match id
-                    try {
-                        int matchId = Integer.parseInt(args[1]);
-                        matchToJoin = getMatchById(matchId);
-                        if (matchToJoin == null || !matchToJoin.getQueueing()) {
-                            sender.sendMessage("§cMatch #" + matchId + " does not exist or has already started.");
+                    if (args.length == 2) {
+                        // player provided a match id
+                        try {
+                            int matchId = Integer.parseInt(args[1]);
+                            matchToJoin = getMatchById(matchId);
+                            if (matchToJoin == null || !matchToJoin.getQueueing()) {
+                                sender.sendMessage("§cMatch #" + matchId + " does not exist or has already started.");
+                                return;
+                            }
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage("§cInvalid match ID!");
                             return;
                         }
-                    } catch (NumberFormatException e) {
-                        sender.sendMessage("§cInvalid match ID!");
-                        return;
+                    } else {
+                        // no id provided -> join the active queue
+                        matchToJoin = getActiveQueue();
+                        if (matchToJoin == null) {
+                            sender.sendMessage("§cThere is no queueing match to join.");
+                            return;
+                        }
                     }
-                } else {
-                    // no id provided -> join the active queue
-                    matchToJoin = getActiveQueue();
-                    if (matchToJoin == null) {
-                        sender.sendMessage("§cThere is no queueing match to join.");
-                        return;
-                    }
-                }
 
-                matchToJoin.addPlayer(puuid);
-                Bukkit.broadcastMessage(sender.getName() + " joined match #" + matchToJoin.getMatchId() + "!");
-                return;
-            }
-
-            case "skip" -> {
-                if (playerMatch == null) {
-                    sender.sendMessage("§cYou aren't in a match!");
-                    return;
-                }
-                if (!playerMatch.getQueueing()) {
-                    sender.sendMessage("§cYour match has already started!");
+                    matchToJoin.addPlayer(puuid);
+                    Bukkit.broadcastMessage(sender.getName() + " joined match #" + matchToJoin.getMatchId() + "!");
                     return;
                 }
 
-                Bukkit.broadcastMessage(sender.getName() + " skipped the countdown for match #" + playerMatch.getMatchId() + "!");
-                startMatch(playerMatch);
-                return;
-            }
-            
-            case "help" -> {
-                sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
-                return;
-            }
+                case "skip" -> {
+                    if (playerMatch == null) {
+                        sender.sendMessage("§cYou aren't in a match!");
+                        return;
+                    }
+                    if (!playerMatch.getQueueing()) {
+                        sender.sendMessage("§cYour match has already started!");
+                        return;
+                    }
 
-            case "default" -> {
-                sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
-                return;
-            }
+                    Bukkit.broadcastMessage(sender.getName() + " skipped the countdown for match #" + playerMatch.getMatchId() + "!");
+                    startMatch(playerMatch);
+                    return;
+                }
+                
+                case "help" -> {
+                    sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
+                    return;
+                }
 
-            default -> {
-                sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
-                return;
+                case "default" -> {
+                    sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
+                    return;
+                }
+
+                default -> {
+                    sender.sendMessage("§eStart a new match with:\n§a/arena start <kit>\n§eJoin a current match with:\n§a/arena join [match]\n§eSkip the countdown for the match you are in:\n§a/arena skip\n§ePreview a kit:\n§a/arena preview <kit>\n§eSee a list of kits:\n§a/arena kits");
+                    return;
+                }
             }
+        } catch (Exception e) {
+           sender.sendMessage("§cAn error occured. Please report this to an admin:\n" + e.getMessage());
         }
     }
 
@@ -193,7 +199,7 @@ public class ArenaLogic implements Listener {
         } else {
             String errornoo = "Yea it doesnt exist";
             kits.add(errornoo);
-            kits.add(ArenaInstance.getInstance().getDataFolder().getParent()+"PlayerKits2/kits");
+            kits.add(ArenaInstance.getInstance().getDataFolder().getParent() + "PlayerKits2/kits");
         }
         return kits;
     }
@@ -208,7 +214,7 @@ public class ArenaLogic implements Listener {
     }
 
     public static List<Integer> getAllArenaIds() {
-        if (ConfigMgr.debug()) {
+        if (ConfigManager.debug()) {
             ArenaInstance.getInstance().getLogger().info(ArenaInstance.getInstance().getConfig().getValues(true).toString());
         }
 
@@ -303,10 +309,10 @@ public class ArenaLogic implements Listener {
         if (currentMatch == null) return;
         if (currentMatch.getQueueing()) return;
 
-        if (ConfigMgr.debug()) {
-            Bukkit.broadcastMessage("Player "+player.getName()+" died!");
-            Bukkit.broadcastMessage("Alive players in the match: "+currentMatch.getPlayers());
-            Bukkit.broadcastMessage("Dead players in the match: "+currentMatch.getDiedPlayers());
+        if (ConfigManager.debug()) {
+            Bukkit.broadcastMessage("Player " + player.getName() + " died!");
+            Bukkit.broadcastMessage("Alive players in the match: " + currentMatch.getAlivePlayers());
+            Bukkit.broadcastMessage("Dead players in the match: " + currentMatch.getDiedPlayers());
         }
 
         currentMatch.markDead(uuid);
@@ -320,9 +326,9 @@ public class ArenaLogic implements Listener {
             original = player.getName() + " died";
         }
         int placeCap = 2;
-        if (ConfigMgr.debug()) {
+        if (ConfigManager.debug()) {
             placeCap = 1;
-            Bukkit.broadcastMessage("Place: "+place +"\nPlace Cap: "+placeCap);
+            Bukkit.broadcastMessage("Place: " + place  + "\nPlace Cap: " + placeCap);
         }
         if (place > placeCap) {
             event.setDeathMessage(original + " and got #" + place);
@@ -332,7 +338,7 @@ public class ArenaLogic implements Listener {
             endMatch(currentMatch);
         } else {
             event.setDeathMessage(original + " and got #" + place);
-            List<UUID> alive = new ArrayList<>(currentMatch.getPlayers());
+            List<UUID> alive = new ArrayList<>(currentMatch.getAlivePlayers());
             alive.removeAll(currentMatch.getDiedPlayers());
             if (alive.size() == 1) {
                 Player winner = Bukkit.getPlayer(alive.get(0));
@@ -352,11 +358,11 @@ public class ArenaLogic implements Listener {
 
         Match match = getPlayerMatch(uuid);
         if (match == null) {
-            if (ConfigMgr.debug()) Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit, but wasn't in a match.");
+            if (ConfigManager.debug()) Bukkit.broadcastMessage("Player " + event.getPlayer().getName() + " quit, but wasn't in a match.");
             return;
         }
 
-        if (ConfigMgr.debug()) Bukkit.broadcastMessage("Player "+event.getPlayer().getName()+" quit and was in a match!");
+        if (ConfigManager.debug()) Bukkit.broadcastMessage("Player " + event.getPlayer().getName() + " quit and was in a match!");
         player.setHealth(0.0);
     }
 
@@ -369,11 +375,11 @@ public class ArenaLogic implements Listener {
 
     @SuppressWarnings("deprecation")
     public static void startMatch(Match match) {
-        if (ConfigMgr.debug()) Bukkit.broadcastMessage("Match finished: "+match.getFinished());
+        if (ConfigManager.debug()) Bukkit.broadcastMessage("Match finished: " + match.getFinished());
         if (match.getFinished()) return;
-        if (match.getPlayers().size() == 1) {
-            if (!ConfigMgr.debug()) {
-                Player p = Bukkit.getPlayer(match.getPlayers().get(0));
+        if (match.getAlivePlayers().size() == 1) {
+            if (!ConfigManager.debug()) {
+                Player p = Bukkit.getPlayer(match.getAlivePlayers().get(0));
                 if (p != null) {
                     p.sendMessage("§cYou can't play a match by yourself!");
                 }
@@ -381,7 +387,7 @@ public class ArenaLogic implements Listener {
             }
         }
 
-        if (match.getPlayers().size() > 4) {
+        if (match.getAlivePlayers().size() > 4) {
             Bukkit.broadcastMessage("§4Error: max 4 players allowed.");
             return;
         }
@@ -404,7 +410,7 @@ public class ArenaLogic implements Listener {
         }
 
         int index = 0;
-        for (UUID uuid : match.getPlayers()) {
+        for (UUID uuid : match.getAlivePlayers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
@@ -416,9 +422,9 @@ public class ArenaLogic implements Listener {
             player.teleport(rooms.get(index));
             player.sendMessage("§aYou've been teleported to your arena room!");
             ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-            String command = "kit give "+match.getKit()+" "+player.getName();
+            String command = "kit give " + match.getKit() + " " + player.getName();
             Bukkit.dispatchCommand(console, command);
-            command = "effect clear "+player.getName();
+            command = "effect clear " + player.getName();
             Bukkit.dispatchCommand(console, command);
             index++;
 
@@ -432,7 +438,7 @@ public class ArenaLogic implements Listener {
 
     @SuppressWarnings({ "unchecked", "deprecation" })
     public static void openCloseGates(Integer arenaId) {
-        if (ConfigMgr.debug()) {
+        if (ConfigManager.debug()) {
             Bukkit.broadcastMessage("Opening/closing gates");
         }
         List<Map<?, ?>> arenas = (List<Map<?, ?>>) ArenaInstance.getInstance().getConfig().get("arenas");
@@ -470,7 +476,7 @@ public class ArenaLogic implements Listener {
     public static void countdownMatch(Match match) {
         Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(), () -> {
             if (!match.getQueueing()) return;
-            Bukkit.broadcastMessage("§aStarting match #"+match.getMatchId()+" in 10 seconds...");
+            Bukkit.broadcastMessage("§aStarting match #" + match.getMatchId() + " in 10 seconds...");
             Bukkit.getScheduler().runTaskLater(ArenaInstance.getInstance(),
                 () -> {
                     if (!match.getQueueing()) return;
